@@ -1,6 +1,12 @@
 package org.sikuli.recorder.event;
 
+import java.util.Map;
+
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.google.common.base.Objects;
 
 public class ClickEvent extends Event {
 	private int x;
@@ -24,4 +30,29 @@ public class ClickEvent extends Event {
 		obj.put("y",y);
 		return obj;
 	}
+	
+	static public ClickEvent createFromJSON(String jsonText){		
+		ClickEvent e = new ClickEvent();
+		JSONParser parser = new JSONParser();
+		try {
+			Map json;
+			json = (Map) parser.parse(jsonText);//, containerFactory);
+			long x = (Long) json.get("x");
+			long y=  (Long) json.get("y");
+			e.setX((int) x);
+			e.setY((int) y);
+			return e;
+		} catch (ParseException ep) {
+			return null;
+		}
+	}
+	
+	
+	@Override
+	public String toString() {
+	    return Objects.toStringHelper(this.getClass()).add("x", x)
+	            .add("y", y)
+	            .toString();
+	}
+
 }
