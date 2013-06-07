@@ -91,6 +91,43 @@ slide_xml(slide) ::= <<
 					</a:p>
 				</p:txBody>
 			</p:sp>
+			<p:sp>
+				<p:nvSpPr>
+					<p:cNvPr id="5" name="TextBox 1"/>
+					<p:cNvSpPr txBox="1"/>
+					<p:nvPr/>
+				</p:nvSpPr>
+				<p:spPr>
+					<a:xfrm>
+						<a:off x="152865" y="211649"/>
+						<a:ext cx="705955" cy="369332"/>
+					</a:xfrm>
+					<a:prstGeom prst="rect">
+						<a:avLst/>
+					</a:prstGeom>
+					<a:solidFill>
+						<a:srgbClr val="EEECE1"/>
+					</a:solidFill>
+					<a:ln>
+						<a:solidFill>
+							<a:schemeClr val="tx1"/>
+						</a:solidFill>
+					</a:ln>
+				</p:spPr>
+				<p:txBody>
+					<a:bodyPr wrap="none" rtlCol="0">
+						<a:spAutoFit/>
+					</a:bodyPr>
+					<a:lstStyle/>
+					<a:p>
+						<a:r>
+							<a:rPr lang="en-US" dirty="0" smtClean="0"/>
+							<a:t>CLICK</a:t>
+						</a:r>
+						<a:endParaRPr lang="en-US" dirty="0"/>
+					</a:p>
+				</p:txBody>
+			</p:sp>			
 		</p:spTree>
 		<p:extLst>
 			<p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">

@@ -1,4 +1,4 @@
-package org.sikuli.recorder;
+package org.sikuli.recorder.html;
 
 import java.io.File;
 import java.io.IOException;
