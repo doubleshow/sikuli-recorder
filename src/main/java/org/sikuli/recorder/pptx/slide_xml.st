@@ -1,4 +1,4 @@
-slide_xml() ::= <<
+slide_xml(slide) ::= <<
 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
@@ -47,6 +47,50 @@ slide_xml() ::= <<
 					</a:prstGeom>
 				</p:spPr>
 			</p:pic>
+			<p:sp>
+				<p:nvSpPr>
+					<p:cNvPr id="2" name="Rectangle 1"/>
+					<p:cNvSpPr/>
+					<p:nvPr/>
+				</p:nvSpPr>
+				<p:spPr>
+					<a:xfrm>
+						<a:off x="$slide.box.x$" y="$slide.box.y$"/>
+						<a:ext cx="$slide.box.cx$" cy="$slide.box.cy$"/>
+					</a:xfrm>
+					<a:prstGeom prst="rect">
+						<a:avLst/>
+					</a:prstGeom>
+					<a:noFill/>
+					<a:ln w="38100" cmpd="sng">
+						<a:solidFill>
+							<a:srgbClr val="FF0000"/>
+						</a:solidFill>
+					</a:ln>
+				</p:spPr>
+				<p:style>
+					<a:lnRef idx="1">
+						<a:schemeClr val="accent1"/>
+					</a:lnRef>
+					<a:fillRef idx="3">
+						<a:schemeClr val="accent1"/>
+					</a:fillRef>
+					<a:effectRef idx="2">
+						<a:schemeClr val="accent1"/>
+					</a:effectRef>
+					<a:fontRef idx="minor">
+						<a:schemeClr val="lt1"/>
+					</a:fontRef>
+				</p:style>
+				<p:txBody>
+					<a:bodyPr rtlCol="0" anchor="ctr"/>
+					<a:lstStyle/>
+					<a:p>
+						<a:pPr algn="ctr"/>
+						<a:endParaRPr lang="en-US"/>
+					</a:p>
+				</p:txBody>
+			</p:sp>
 		</p:spTree>
 		<p:extLst>
 			<p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">
@@ -58,5 +102,6 @@ slide_xml() ::= <<
 		<a:masterClrMapping/>
 	</p:clrMapOvr>
 </p:sld>
+
 
 >>

@@ -29,7 +29,7 @@ public class Recorder {
 		rec.addEventDetector(c1);
 		rec.addEventDetector(c2);
 		
-		rec.start();		
+		rec.start();
 	}
 	
 	private List<EventDetector> detectors = Lists.newArrayList();

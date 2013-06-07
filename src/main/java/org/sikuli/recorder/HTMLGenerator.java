@@ -5,99 +5,24 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 import org.sikuli.api.API;
 import org.sikuli.recorder.event.ClickEvent;
+import org.sikuli.recorder.event.ClickEventGroup;
 import org.sikuli.recorder.event.Event;
+import org.sikuli.recorder.event.Events;
 import org.sikuli.recorder.event.ScreenShotEvent;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import org.stringtemplate.v4.*;
 
 public class HTMLGenerator {
 
-	List<Event> events;
-
-	static public List<Event> readEventsFrom(File inputDir){
-
-		List<Event> events = Lists.newArrayList();
-
-
-		File[] files = inputDir.listFiles();
-
-		// sort the files so that they are chronologically ordered
-		// we assume that the name ordering reflects its chronological order 
-		Arrays.sort(files);
-
-		for (File f : files){
-
-			String s = f.getPath();
-
-			if (s.contains("click.txt")){
-				try {
-					String jsonString = Files.toString(f, Charsets.US_ASCII);
-					ClickEvent clickEvent = ClickEvent.createFromJSON(jsonString);
-					events.add(clickEvent);
-				} catch (IOException e1) {
-				}
-
-			}else if (s.contains("screenshot.png")){								
-				ScreenShotEvent screenShotEvent = ScreenShotEvent.createFromFile(f);				
-				events.add(screenShotEvent);				
-			}
-		}
-		return events;
-	}
-
-	static class EventWithScreenShot<E extends Event> {		
-		private E event;
-		private ScreenShotEvent screenShotEvent;
-		public E getEvent() {
-			return event;
-		}
-		public void setEvent(E event) {
-			this.event = event;
-		}
-		public ScreenShotEvent getScreenShotEvent() {
-			return screenShotEvent;
-		}
-		public void setScreenShotEvent(ScreenShotEvent screenShotEvent) {
-			this.screenShotEvent = screenShotEvent;
-		}		
-	}
-
-
-
-	static public List<ClickEventGroup> getClickEventGroups(List<Event> events){
-
-		List<ClickEventGroup >slideDataList = Lists.newArrayList(); 
-		for (int i = 0; i < events.size(); ++i) {
-			Event e = events.get(i);
-			if (e instanceof ClickEvent){
-
-				ClickEvent clickEvent = (ClickEvent) e;				
-				ScreenShotEvent screenShotEventBefore = findScreenShotEventBefore(events, i);
-				if (screenShotEventBefore != null){					
-
-					ClickEventGroup data = new ClickEventGroup();				
-					data.setClickEvent(clickEvent);
-					data.setScreenShotEventBefore(screenShotEventBefore);
-					
-					slideDataList.add(data);
-				}
-			}
-		}
-
-		return slideDataList;
-	}
-
 	public void generate(File inputDir, File outputDir){
-		List<Event> events = readEventsFrom(inputDir);
+		List<Event> events = Events.readEventsFrom(inputDir);
 
 		if (!outputDir.exists()){
 			outputDir.mkdir();
@@ -114,7 +39,7 @@ public class HTMLGenerator {
 		String firstPageUrl = null;
 
 		int no = 1;
-		List<ClickEventGroup> slideDataList = getClickEventGroups(events);
+		List<ClickEventGroup> slideDataList = Events.getClickEventGroups(events);
 
 		for (ClickEventGroup data : slideDataList){
 
@@ -169,15 +94,6 @@ public class HTMLGenerator {
 
 	}
 
-	static private ScreenShotEvent findScreenShotEventBefore(List<Event> events, int start) {
-		for (int i = start; i >= 0; i--){
-			Event e = events.get(i);
-			if (e instanceof ScreenShotEvent)
-				return (ScreenShotEvent) e;
-		}
-		return null;
-	}
-
 	static STGroup stg = new STGroupFile("org/sikuli/recorder/html.stg", "utf-8", '$', '$');
 
 	public static void main(String[] args) throws MalformedURLException {
@@ -193,22 +109,4 @@ public class HTMLGenerator {
 		API.browse(url);
 	}
 
-}
-
-
-class ClickEventGroup {
-	private ClickEvent clickEvent;
-	private ScreenShotEvent screenShotEventBefore;
-	public ClickEvent getClickEvent() {
-		return clickEvent;
-	}
-	public void setClickEvent(ClickEvent clickEvent) {
-		this.clickEvent = clickEvent;
-	}
-	public ScreenShotEvent getScreenShotEventBefore() {
-		return screenShotEventBefore;
-	}
-	public void setScreenShotEventBefore(ScreenShotEvent screenShotEventBefore) {
-		this.screenShotEventBefore = screenShotEventBefore;
-	}
 }
