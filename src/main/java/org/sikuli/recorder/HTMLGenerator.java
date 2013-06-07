@@ -23,7 +23,7 @@ public class HTMLGenerator {
 
 	List<Event> events;
 
-	public List<Event> readEventsFrom(File inputDir){
+	static public List<Event> readEventsFrom(File inputDir){
 
 		List<Event> events = Lists.newArrayList();
 
@@ -54,6 +54,47 @@ public class HTMLGenerator {
 		return events;
 	}
 
+	static class EventWithScreenShot<E extends Event> {		
+		private E event;
+		private ScreenShotEvent screenShotEvent;
+		public E getEvent() {
+			return event;
+		}
+		public void setEvent(E event) {
+			this.event = event;
+		}
+		public ScreenShotEvent getScreenShotEvent() {
+			return screenShotEvent;
+		}
+		public void setScreenShotEvent(ScreenShotEvent screenShotEvent) {
+			this.screenShotEvent = screenShotEvent;
+		}		
+	}
+
+
+
+	static public List<ClickEventGroup> getClickEventGroups(List<Event> events){
+
+		List<ClickEventGroup >slideDataList = Lists.newArrayList(); 
+		for (int i = 0; i < events.size(); ++i) {
+			Event e = events.get(i);
+			if (e instanceof ClickEvent){
+
+				ClickEvent clickEvent = (ClickEvent) e;				
+				ScreenShotEvent screenShotEventBefore = findScreenShotEventBefore(events, i);
+				if (screenShotEventBefore != null){					
+
+					ClickEventGroup data = new ClickEventGroup();				
+					data.setClickEvent(clickEvent);
+					data.setScreenShotEventBefore(screenShotEventBefore);
+					
+					slideDataList.add(data);
+				}
+			}
+		}
+
+		return slideDataList;
+	}
 
 	public void generate(File inputDir, File outputDir){
 		List<Event> events = readEventsFrom(inputDir);
@@ -73,58 +114,49 @@ public class HTMLGenerator {
 		String firstPageUrl = null;
 
 		int no = 1;
-		for (int i = 0; i < events.size(); ++i) {
+		List<ClickEventGroup> slideDataList = getClickEventGroups(events);
 
-			Event e = events.get(i);
+		for (ClickEventGroup data : slideDataList){
 
-			if (e instanceof ClickEvent){
+			ClickEvent clickEvent = (ClickEvent) data.getClickEvent();				
+			ScreenShotEvent screenShotEventBefore = data.getScreenShotEventBefore();
 
-				ClickEvent clickEvent = (ClickEvent) e;				
-				ScreenShotEvent screenShotEventBefore = findScreenShotEventBefore(events, i);
-				if (screenShotEventBefore != null){					
-				
-				}
+			// copy image file
+			try {
+				File src = screenShotEventBefore.getFile();
+				File dest = new File(imageDir, src.getName());
+				Files.copy(src, dest);
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}				
 
-				// copy image file
-				try {
-					File src = screenShotEventBefore.getFile();
-					File dest = new File(imageDir, src.getName());
-					Files.copy(src, dest);
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}				
+			ST pageST = stg.getInstanceOf("page");
+			pageST.add("x", clickEvent.getX()-25);
+			pageST.add("y", clickEvent.getY()-25);
+			pageST.add("xc", clickEvent.getX()-5);
+			pageST.add("yc", clickEvent.getY()-5);
+			pageST.add("imgurl", "images/" + screenShotEventBefore.getFile().getName());
 
-				ST pageST = stg.getInstanceOf("page");
-				pageST.add("x", clickEvent.getX()-25);
-				pageST.add("y", clickEvent.getY()-25);
-				pageST.add("xc", clickEvent.getX()-5);
-				pageST.add("yc", clickEvent.getY()-5);
-				pageST.add("imgurl", "images/" + screenShotEventBefore.getFile().getName());
+			String pageName = "" + no;
+			String pageUrl = pageName + ".html";
 
-				String pageName = "" + no;
-				String pageUrl = pageName + ".html";
+			File outFile = new File(outputDir, pageUrl);
+			try {
+				Files.write(pageST.render(), outFile, Charsets.UTF_8);
+			} catch (IOException e1) {				
 
-				File outFile = new File(outputDir, pageUrl);
-				try {
-					Files.write(pageST.render(), outFile, Charsets.UTF_8);
-				} catch (IOException e1) {				
-
-				}
-
-				pageListST.addAggr("pages.{url,name}", pageUrl, pageName);
-
-				if (firstPageUrl == null){
-					firstPageUrl = pageUrl;
-					indexST.add("firstPageUrl", firstPageUrl);
-				}				
-
-				// increment the page counter
-				no++;
 			}
 
+			pageListST.addAggr("pages.{url,name}", pageUrl, pageName);
+
+			if (firstPageUrl == null){
+				firstPageUrl = pageUrl;
+				indexST.add("firstPageUrl", firstPageUrl);
+			}				
+
+			// increment the page counter
+			no++;
 		}
-
-
 
 		File indexFile = new File(outputDir, "index.html");				
 		File pageListFile = new File(outputDir, "page-list.html");
@@ -137,7 +169,7 @@ public class HTMLGenerator {
 
 	}
 
-	private ScreenShotEvent findScreenShotEventBefore(List<Event> events, int start) {
+	static private ScreenShotEvent findScreenShotEventBefore(List<Event> events, int start) {
 		for (int i = start; i >= 0; i--){
 			Event e = events.get(i);
 			if (e instanceof ScreenShotEvent)
@@ -152,13 +184,31 @@ public class HTMLGenerator {
 
 		File inputDir = new File("output/2013-06-06-15-14-21");		
 		File outputDir = new File("html");
-		
+
 		HTMLGenerator g = new HTMLGenerator();		
 		g.generate(inputDir, outputDir);
-		
+
 		URI uri = new File(outputDir, "index.html").toURI();
 		URL url = uri.toURL();
 		API.browse(url);
 	}
 
+}
+
+
+class ClickEventGroup {
+	private ClickEvent clickEvent;
+	private ScreenShotEvent screenShotEventBefore;
+	public ClickEvent getClickEvent() {
+		return clickEvent;
+	}
+	public void setClickEvent(ClickEvent clickEvent) {
+		this.clickEvent = clickEvent;
+	}
+	public ScreenShotEvent getScreenShotEventBefore() {
+		return screenShotEventBefore;
+	}
+	public void setScreenShotEventBefore(ScreenShotEvent screenShotEventBefore) {
+		this.screenShotEventBefore = screenShotEventBefore;
+	}
 }
