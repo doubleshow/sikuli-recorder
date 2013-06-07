@@ -112,12 +112,19 @@ public class PPTXGenerator {
 	public static void main(String[] args) throws IOException{
 
 		File eventDir = new File("output/2013-06-06-15-14-21");
-		File pptxSkeletonDir = createSkeletonDir();
-
-		generateFiles(pptxSkeletonDir, eventDir);
-
-		File outputPPTX = new File("e.pptx");
-		Zip.zipDir(pptxSkeletonDir, outputPPTX);
+		File outputFile = new File("e.pptx");
+		generate(eventDir, outputFile);
+	}
+	
+	public static void generate(File eventDir, File outputFile){
+		File pptxSkeletonDir;
+		try {
+			pptxSkeletonDir = createSkeletonDir();
+			generateFiles(pptxSkeletonDir, eventDir);
+			Zip.zipDir(pptxSkeletonDir, outputFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static File createSkeletonDir() throws IOException{

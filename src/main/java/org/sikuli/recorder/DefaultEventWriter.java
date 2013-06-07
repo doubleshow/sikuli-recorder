@@ -27,15 +27,20 @@ public class DefaultEventWriter implements EventWriter {
 	private File outputDir;
 	public DefaultEventWriter(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		String name = sdf.format(new Date());			
-		outputDir = new File("output/" + name);
-		if (!outputDir.exists())
+		String name = sdf.format(new Date());	
+		try {
+			File temp = Utils.createTempDirectory();
+			outputDir = new File(temp, name);
 			outputDir.mkdir();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// TODO remove temp directory when done		
 	}
 
 	@Override
 	public void write(Event event) {
-		System.out.println(outputDir + "/" + event.getClass());
+		//System.out.println(getEventDir() + "/" + event.getClass());
 
 		if (event.getClass().equals(ScreenShotEvent.class)){
 
@@ -43,10 +48,11 @@ public class DefaultEventWriter implements EventWriter {
 
 			BufferedImage image = ((ScreenShotEvent)event).getImage();
 			try {
-				ImageIO.write(image, "png", new File(outputDir, name));
+				ImageIO.write(image, "png", new File(getEventDir(), name));
 			} catch (IOException e) {
 			}
 
+			System.out.println("ScreenShot --> " + name);
 
 		} else if (event.getClass().equals(ClickEvent.class)){
 
@@ -54,11 +60,19 @@ public class DefaultEventWriter implements EventWriter {
 
 			JSONObject json = event.toJSON();
 			try {
-				Files.write(json.toJSONString(), new File(outputDir, name), Charsets.US_ASCII);
+				Files.write(json.toJSONString(), new File(getEventDir(), name), Charsets.US_ASCII);
 			} catch (IOException e) {
 			}
 
-			System.out.println(outputDir + "/" + name);
+			System.out.println("Click --> " + name);
 		}
+	}
+
+	public File getEventDir() {
+		return outputDir;
+	}
+
+	public void setEventDir(File outputDir) {
+		this.outputDir = outputDir;
 	}		
 }

@@ -19,6 +19,9 @@ public class EventDetector {
 	public void start(){		
 	}
 
+	public void stop(){		
+	}
+	
 	public void setWriter(EventWriter writer) {
 		this.writer = writer;
 	}
