@@ -41,14 +41,15 @@ public class Recorder {
 	public File getEventDir() {
 		return writer.getEventDir();
 	}
-	
+
 	public void setEventDir(File dir) {
 		writer.setEventDir(dir);
+
 	}
 
 	private List<EventDetector> detectors = Lists.newArrayList();
 
-	
+
 	DefaultEventWriter writer = new DefaultEventWriter();
 	public void addEventDetector(EventDetector d) {
 		d.setWriter(writer);
@@ -60,7 +61,9 @@ public class Recorder {
 			d.start();
 		}
 	}
-	
+
+
+
 	public void setRegionOfInterest(ScreenRegion screenRegion) {
 		regionOfInterest = screenRegion;
 		for (EventDetector d : detectors){
@@ -68,22 +71,22 @@ public class Recorder {
 		}
 	}
 
-	
+
 	CountDownLatch escapeSignal = new CountDownLatch(1);
-	
+
 	public void stopRecording(){	
 		for (EventDetector d : detectors){
 			d.stop();
 		}		
 	}
-	
+
 	public void start(){
-		
+
 		ScreenRegion outsideBorder = Relative.to(regionOfInterest).taller(7).wider(7).getScreenRegion();
 		// draw bigger so the red lines won't be captured in screenshots
 		canvas.addBox(outsideBorder).withColor(Color.red).withLineWidth(3);
 		canvas.show();
-		
+
 		try {
 			GlobalScreen.registerNativeHook();
 		}
@@ -101,12 +104,12 @@ public class Recorder {
 			escapeSignal.await();
 		} catch (InterruptedException e) {
 		}
-		
+
 		stopRecording();
-		
+
 		canvas.hide();
 		System.out.println("Recording is stopped.");
-		 
+
 	}
 
 	class HotKeyListener implements NativeKeyListener {
@@ -145,6 +148,7 @@ public class Recorder {
 		}
 
 	}
+
 
 
 }
