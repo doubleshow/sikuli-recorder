@@ -2,13 +2,9 @@ package org.sikuli.recorder.detector;
 
 import java.awt.image.BufferedImage;
 
-import org.sikuli.api.DesktopScreenRegion;
-import org.sikuli.api.ScreenRegion;
 import org.sikuli.recorder.event.ScreenShotEvent;
 
 public class ScreenshotEventDetector extends EventDetector {
-
-	private ScreenRegion s;
 
 	public void stop(){
 		running = false;
@@ -20,9 +16,11 @@ public class ScreenshotEventDetector extends EventDetector {
 
 	volatile  boolean running = true;
 	private Thread capturingThread;
-
-	public void start(){
-		s = new DesktopScreenRegion();				
+	
+	
+	public void start(){		
+		 
+		
 		capturingThread = new Thread(){
 			public void run(){
 				while (running){		
@@ -35,11 +33,12 @@ public class ScreenshotEventDetector extends EventDetector {
 				}
 			}
 		};
+				
 		capturingThread.start();
 	}
 
 	private void performScreenCapture(){		 
-		BufferedImage image = s.capture();		
+		BufferedImage image = getRegionOfInterest().capture();		
 		ScreenShotEvent e = new ScreenShotEvent();
 		e.setImage(image);
 		eventDetected(e);

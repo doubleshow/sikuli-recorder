@@ -40,7 +40,7 @@ slide_xml(slide) ::= <<
 				<p:spPr>
 					<a:xfrm>
 						<a:off x="0" y="0"/>
-						<a:ext cx="9144000" cy="5833994"/>
+						<a:ext cx="$slide.imageCx$" cy="$slide.imageCy$"/>
 					</a:xfrm>
 					<a:prstGeom prst="rect">
 						<a:avLst/>

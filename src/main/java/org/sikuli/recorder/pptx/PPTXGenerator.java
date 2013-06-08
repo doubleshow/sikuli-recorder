@@ -67,6 +67,8 @@ public class PPTXGenerator {
 		private String name;
 		private String imageName;
 		private File imageSrc;
+		private int imageCx;
+		private int imageCy;
 		private BoxSTModel box;
 
 		public int getId() {
@@ -104,6 +106,18 @@ public class PPTXGenerator {
 		}
 		public void setBox(BoxSTModel box) {
 			this.box = box;
+		}
+		public int getImageCx() {
+			return imageCx;
+		}
+		public void setImageCx(int imageCx) {
+			this.imageCx = imageCx;
+		}
+		public int getImageCy() {
+			return imageCy;
+		}
+		public void setImageCy(int imageCy) {
+			this.imageCy = imageCy;
 		}
 	}
 
@@ -219,16 +233,42 @@ public class PPTXGenerator {
 				}
 			}
 
-			// dimensions that will scale to fit the slide
-			int imageCx = 9144000;
-			int imageCy = 5833994;
+			int maxCx = 9144000;
+			int maxCy = 6858000;
+			
+			int imageCx = maxCx;
+			int imageCy = maxCy;
+			
+			int maxWidth = 1440;
+			int maxHeight = 1080;
+			
+			int boxX = 0;
+			int boxY = 0;
+			
+			int r = 6350;
+			
+			
+			double scaleX = 1.0 * imageWidth / maxWidth;
+			double scaleY = 1.0 * imageHeight / maxHeight;
+			double scale;
+			if (scaleX > scaleY) {
+				// x is relatively larger
+				imageCx = maxCx;
+				imageCy = (int) (imageHeight / scaleX * r);
+				scale = scaleX;
 
-			int boxX = (int) (1.0 * x *  imageCx / imageWidth);
-			int boxY = (int) (1.0 * y *  imageCy / imageHeight);
+			} else {
+				imageCx = (int) (imageWidth / scaleY * r);				
+				imageCy = maxCy;
+				scale = scaleY;
+			}
+					
+			boxX = (int) (x * r / scale);
+			boxY = (int) (y * r / scale);
 
-			// fixed dimensions
-			int boxCx = 317500;
-			int boxCy = 324110;					
+			// fixed dimensions			
+			int boxCx = 50 * r;
+			int boxCy = 50 * r;					
 
 			// center the box
 			boxX -= (boxCx/2);
@@ -249,6 +289,9 @@ public class PPTXGenerator {
 			slide.setRid(rid);
 			slide.setImageName(imageName);
 			slide.setImageSrc(imageSrc);
+			slide.setImageCx(imageCx);
+			slide.setImageCy(imageCy);
+			
 			slide.setBox(box);
 
 			rid++;
