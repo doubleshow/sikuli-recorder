@@ -12,6 +12,10 @@ From the command line
 
 > java -jar sikuli-recorder-1.x.x.jar
 
+### What are the keyboard shortcuts to control recording?
+[Ctrl+Shift+2] Start Recording
+[Ctrl+Shift+ESC] Stop Recording and Exit
+
 ### What user inputs can be captured?
 * Mouse click
 
