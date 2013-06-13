@@ -1,5 +1,5 @@
-Sikuli Recorders
-================
+Sikuli Recorder
+===============
 
 ### What are the system requirements?
 * JVM 1.6 and above
