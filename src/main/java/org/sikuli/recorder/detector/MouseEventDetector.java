@@ -23,6 +23,7 @@ implements NativeMouseInputListener {
 			event.setX(e.getX() - region.getBounds().x);
 			event.setY(e.getY() - region.getBounds().y);		
 			event.setButton(e.getButton());
+			event.setClickCount(e.getClickCount());
 			eventDetected(event);
 		}
 	}

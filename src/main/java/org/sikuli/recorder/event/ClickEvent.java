@@ -12,6 +12,8 @@ public class ClickEvent extends Event {
 	private int x;
 	private int y;
 	private int button;
+	private int clickCount;
+	
 	public int getX() {
 		return x;
 	}
@@ -30,12 +32,19 @@ public class ClickEvent extends Event {
 	public void setButton(int button) {
 		this.button = button;
 	}	
-
+	public int getCount() {
+		return clickCount;
+	}
+	public void setClickCount(int count) {
+		this.clickCount = count;
+	}
+	
 	public JSONObject toJSON(){
 		JSONObject obj=new JSONObject();
 		obj.put("x",x);
 		obj.put("y",y);
 		obj.put("button",button);
+		obj.put("clickCount", clickCount);
 		return obj;
 	}
 	
@@ -48,9 +57,11 @@ public class ClickEvent extends Event {
 			long x = (Long) json.get("x");
 			long y=  (Long) json.get("y");
 			long button = (Long) json.get("button");
+			long count = (Long) json.get("clickCount");
 			e.setX((int) x);
 			e.setY((int) y);
 			e.setButton((int) button);
+			e.setClickCount((int) count);
 			return e;
 		} catch (ParseException ep) {
 			return null;
@@ -63,8 +74,8 @@ public class ClickEvent extends Event {
 	    return Objects.toStringHelper(this.getClass()).add("x", x)
 	            .add("y", y)
 	            .add("button", button)
+	            .add("clickCount", clickCount)
 	            .toString();
 	}
-
 
 }

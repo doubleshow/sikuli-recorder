@@ -57,6 +57,15 @@ public class Events {
 
 				ClickEvent clickEvent = (ClickEvent) e;				
 				ScreenShotEvent screenShotEventBefore = Events.findScreenShotEventBefore(events, i);
+				
+				boolean isClickEventNext = (i < events.size() - 1) && events.get(i+1) instanceof ClickEvent;
+				if (isClickEventNext){
+					// if it's immediately followed by a click event, it is probably
+					// the first click event of a double-click event, so we ignore this one
+					// and wait to process the next one
+					continue;
+				}
+				
 				if (screenShotEventBefore != null){					
 
 					ClickEventGroup data = new ClickEventGroup();				
@@ -71,7 +80,7 @@ public class Events {
 		return slideDataList;
 	}
 	
-	static public ScreenShotEvent findScreenShotEventBefore(List<Event> events, int start) {
+	static private ScreenShotEvent findScreenShotEventBefore(List<Event> events, int start) {
 		for (int i = start; i >= 0; i--){
 			Event e = events.get(i);
 			if (e instanceof ScreenShotEvent)
@@ -79,6 +88,7 @@ public class Events {
 		}
 		return null;
 	}
+	
 
 
 

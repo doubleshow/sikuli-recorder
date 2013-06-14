@@ -18,6 +18,8 @@ import org.sikuli.recorder.event.ClickEvent;
 import org.sikuli.recorder.event.ClickEventGroup;
 import org.sikuli.recorder.event.Event;
 import org.sikuli.recorder.event.Events;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupDir;
@@ -30,7 +32,7 @@ import com.google.common.io.Files;
 public class PPTXGenerator {
 
 	static STGroup group = new STGroupDir("org/sikuli/recorder/pptx","utf-8", '$', '$');
-
+	static Logger logger = LoggerFactory.getLogger(PPTXGenerator.class);
 
 	static class BoxSTModel {
 		private int x;
@@ -129,7 +131,12 @@ public class PPTXGenerator {
 			this.command = command;
 		}
 		public String toString(){
-			return Objects.toStringHelper(this).add("command", command).toString();
+			return Objects.toStringHelper(this)
+					.add("name", name)
+					.add("command", command)
+					.add("imageName", imageName)
+					.add("imageSrc", imageSrc.getAbsolutePath())					
+					.toString();
 		}
 		
 	}
@@ -232,7 +239,6 @@ public class PPTXGenerator {
 			ClickEvent clickEvent = g.getClickEvent();
 			int x = clickEvent.getX();
 			int y = clickEvent.getY();
-			int button = clickEvent.getButton();
 
 			// assume all images are of the same size
 			// so we read the image dimensions only once			
@@ -308,14 +314,18 @@ public class PPTXGenerator {
 			box.setCy(boxCy);					
 			slide.setBox(box);
 			
-			String command = "";
-			if (button == MouseEvent.BUTTON1){
-				command = "CLICK";
-			}else if (button == MouseEvent.BUTTON3){
-				command = "RIGHTCLICK";
-			}
-			slide.setCommand(command);
-			System.out.println(slide);
+			String command = "";			
+			if (clickEvent.getButton() == MouseEvent.BUTTON1){
+				if (clickEvent.getCount() == 1){
+					command = "Click";
+				}else if (clickEvent.getCount() == 2){
+					command = "Double Click";
+				}
+			} else if (clickEvent.getButton() == MouseEvent.BUTTON3){
+				command = "Right Click";
+			}			
+			slide.setCommand(command);			
+			logger.debug("createSlideSTModels() --> " + slide);
 
 			rid++;
 			id++;
