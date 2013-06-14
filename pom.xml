@@ -35,8 +35,19 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
+	<repositories>
+		<repository>
+			<id>repository</id>
+			<url>file://${basedir}/repo</url>
+		</repository>
+	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>org.jnativehook</groupId>
+			<artifactId>jnativehook</artifactId>
+			<version>1.1.4</version>
+		</dependency>	    
+	    
 		<dependency>
 			<groupId>org.sikuli</groupId>
 			<artifactId>sikuli-api</artifactId>
@@ -48,7 +59,12 @@
 			<artifactId>json-simple</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>com.google.code.cli-parser</groupId>
+			<artifactId>cli</artifactId>
+			<version>7</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -59,6 +75,11 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
 			<version>1.7.2</version>
 		</dependency>
 		<dependency>
@@ -76,13 +97,34 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:git:git@bitbucket.org:doubleshow/sikuli-webdriver.git</connection>
-		<developerConnection>scm:git:git@bitbucket.org:doubleshow/sikuli-webdriver.git</developerConnection>
-		<url>git@bitbucket.org:doubleshow/sikuli-webdriver.git</url>
+		<connection>scm:git:git@github.com:doubleshow/sikuli-recorder.git</connection>
+		<developerConnection>scm:git:git@github.com:doubleshow/sikuli-recorder.git</developerConnection>
+		<url>git@github.com:doubleshow/sikuli-recoder.git</url>
 	</scm>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.sikuli.recorder.RecorderMain</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
