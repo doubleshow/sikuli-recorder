@@ -23,7 +23,7 @@ $pages:{it|
 
 
 
-page(x,y,xc,yc,imgurl) ::= <<
+page(x,y,xc,yc,imgurl,command) ::= <<
 
 <html>
 <head>
@@ -78,7 +78,7 @@ page(x,y,xc,yc,imgurl) ::= <<
 </head>
 <body>
 <img id="screenshot" src="$imgurl$"/>
-<div id="action">Click</div>
+<div id="action">$command$</div>
 <div id="box"></div>
 <div id="target"></div>
 </body>
