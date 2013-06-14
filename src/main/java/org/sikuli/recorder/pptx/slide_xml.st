@@ -100,7 +100,7 @@ slide_xml(slide) ::= <<
 				<p:spPr>
 					<a:xfrm>
 						<a:off x="152865" y="211649"/>
-						<a:ext cx="705955" cy="369332"/>
+						<a:ext cx="1305955" cy="369332"/>
 					</a:xfrm>
 					<a:prstGeom prst="rect">
 						<a:avLst/>
@@ -122,7 +122,7 @@ slide_xml(slide) ::= <<
 					<a:p>
 						<a:r>
 							<a:rPr lang="en-US" dirty="0" smtClean="0"/>
-							<a:t>CLICK</a:t>
+							<a:t>$slide.command$</a:t>
 						</a:r>
 						<a:endParaRPr lang="en-US" dirty="0"/>
 					</a:p>

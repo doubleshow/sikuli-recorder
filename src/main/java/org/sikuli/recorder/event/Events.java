@@ -5,11 +5,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 public class Events {
+	
+	static private Logger logger = LoggerFactory.getLogger(Events.class);
+	
 	static public List<Event> readEventsFrom(File inputDir){
 
 		List<Event> events = Lists.newArrayList();
@@ -30,6 +36,7 @@ public class Events {
 					String jsonString = Files.toString(f, Charsets.US_ASCII);
 					ClickEvent clickEvent = ClickEvent.createFromJSON(jsonString);
 					events.add(clickEvent);
+					logger.debug("read event:" + clickEvent);
 				} catch (IOException e1) {
 				}
 

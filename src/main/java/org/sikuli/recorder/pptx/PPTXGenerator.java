@@ -1,5 +1,6 @@
 package org.sikuli.recorder.pptx;
 
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,7 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupDir;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
@@ -66,6 +68,7 @@ public class PPTXGenerator {
 		private int rid;
 		private String name;
 		private String imageName;
+		private String command;
 		private File imageSrc;
 		private int imageCx;
 		private int imageCy;
@@ -119,6 +122,16 @@ public class PPTXGenerator {
 		public void setImageCy(int imageCy) {
 			this.imageCy = imageCy;
 		}
+		public String getCommand() {
+			return command;
+		}
+		public void setCommand(String command) {
+			this.command = command;
+		}
+		public String toString(){
+			return Objects.toStringHelper(this).add("command", command).toString();
+		}
+		
 	}
 
 
@@ -219,6 +232,7 @@ public class PPTXGenerator {
 			ClickEvent clickEvent = g.getClickEvent();
 			int x = clickEvent.getX();
 			int y = clickEvent.getY();
+			int button = clickEvent.getButton();
 
 			// assume all images are of the same size
 			// so we read the image dimensions only once			
@@ -277,11 +291,6 @@ public class PPTXGenerator {
 			String name = "slide" + no + ".xml"; // slide1.xml, slide2.xml ... etc
 			String imageName = "image" + no + ".png";
 
-			BoxSTModel box = new BoxSTModel();
-			box.setX(boxX);
-			box.setY(boxY);
-			box.setCx(boxCx);
-			box.setCy(boxCy);			
 
 			SlideSTModel slide = new SlideSTModel();
 			slide.setName(name);
@@ -291,8 +300,22 @@ public class PPTXGenerator {
 			slide.setImageSrc(imageSrc);
 			slide.setImageCx(imageCx);
 			slide.setImageCy(imageCy);
-			
+
+			BoxSTModel box = new BoxSTModel();
+			box.setX(boxX);
+			box.setY(boxY);
+			box.setCx(boxCx);
+			box.setCy(boxCy);					
 			slide.setBox(box);
+			
+			String command = "";
+			if (button == MouseEvent.BUTTON1){
+				command = "CLICK";
+			}else if (button == MouseEvent.BUTTON3){
+				command = "RIGHTCLICK";
+			}
+			slide.setCommand(command);
+			System.out.println(slide);
 
 			rid++;
 			id++;
